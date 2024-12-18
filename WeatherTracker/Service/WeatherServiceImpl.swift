@@ -58,6 +58,11 @@ class WeatherServiceImpl: WeatherService {
         task.resume()
     }
     
-    
-    
+}
+
+extension WeatherServiceImpl {
+    func decodeWeather(from data: Data) throws -> WeatherModel {
+        let decoder = JSONDecoder()
+        return try decoder.decode(WeatherModel.self, from: data)
+    }
 }

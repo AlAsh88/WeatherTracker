@@ -19,20 +19,17 @@ public struct WeatherModel: Codable {
     enum RootKeys: String, CodingKey {
         case location
         case current
-        
-        
-        case iconURL = "icon"
     }
     
     enum LocationKeys: String, CodingKey {
-        case cityName = "name"
+        case name
     }
     
     enum CurrentKeys: String, CodingKey {
-        case temperature = "temp_f"
-        case feelsLike = "feelslike_f"
+        case tempF = "temp_f"
+        case feelsLikeF = "feelslike_f"
         case humidity
-        case uvIndex = "uv"
+        case uv
         case condition
     }
     
@@ -41,26 +38,26 @@ public struct WeatherModel: Codable {
         case icon
     }
     
-    public init(from decoder: any Decoder) throws {
-        let rootContainer = try decoder.container(keyedBy: RootKeys.self)
-        
-        let locationContainer = try decoder.container(keyedBy: LocationKeys.self)
-        self.cityName = try locationContainer.decode(String.self, forKey: .cityName)
-        
-        let currentContainer = try decoder.container(keyedBy: CurrentKeys.self)
-        self.temperature = try currentContainer.decode(Double.self, forKey: .temperature)
-        self.feelsLike = try currentContainer.decode(Double.self, forKey: .feelsLike)
-        self.humidity = try currentContainer.decode(Int.self, forKey: .humidity)
-        self.uvIndex = try currentContainer.decode(Double.self, forKey: .uvIndex)
-        
-        let conditionContainer = try currentContainer.nestedContainer(keyedBy: ConditionKeys.self, forKey: .condition)
-        self.condition = try conditionContainer.decode(String.self, forKey: .text)
-        
-        let iconPath = try conditionContainer.decode(String.self, forKey: .icon)
-        guard let url = URL(string: "https:\(iconPath)") else {
-            throw DecodingError.dataCorruptedError(forKey: .icon, in: conditionContainer, debugDescription: "Invalid icon URL")
+    public init(from decoder: Decoder) throws {
+        do {
+            let rootContainer = try decoder.container(keyedBy: RootKeys.self)
+            let locationContainer = try rootContainer.nestedContainer(keyedBy: LocationKeys.self, forKey: .location)
+            cityName = try locationContainer.decode(String.self, forKey: .name)
+            
+            let currentContainer = try rootContainer.nestedContainer(keyedBy: CurrentKeys.self, forKey: .current)
+            temperature = try currentContainer.decode(Double.self, forKey: .tempF)
+            feelsLike = try currentContainer.decode(Double.self, forKey: .feelsLikeF)
+            humidity = try currentContainer.decode(Int.self, forKey: .humidity)
+            uvIndex = try currentContainer.decode(Double.self, forKey: .uv)
+            
+            let conditionContainer = try currentContainer.nestedContainer(keyedBy: ConditionKeys.self, forKey: .condition)
+            condition = try conditionContainer.decode(String.self, forKey: .text)
+            let iconPath = try conditionContainer.decode(String.self, forKey: .icon)
+            iconURL = URL(string: "https:" + iconPath)!
+        } catch {
+            print("Decoding failed: \(error)")
+            throw error
         }
-        self.iconURL = try rootContainer.decode(URL.self, forKey: .iconURL)
     }
     
 }
