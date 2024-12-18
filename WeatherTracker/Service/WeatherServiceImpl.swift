@@ -17,7 +17,7 @@ enum NetworkError: Error {
     case decodingFailed
 }
 
-class WeatherVServiceImpl: WeatherService {
+class WeatherServiceImpl: WeatherService {
     private let baseURL = "https://api.weatherapi.com/v1/current.json"
     private let apiKey = "dcfc7e47d59e41ea949160412241712&q"
     
