@@ -5,23 +5,35 @@
 //  Created by Ayesha Shaikh on 12/17/24.
 //
 
+import Combine
 import Foundation
 
 protocol WeatherService {
     func fetchWeather(forCity city: String, completion: @escaping (Result<WeatherModel, Error>) -> Void)
 }
 
-enum NetworkError: Error {
+enum NetworkError: LocalizedError {
     case invalidURL
     case noData
     case decodingFailed
+    
+    var errorDescription: String? {
+        switch self {
+        case .invalidURL:
+            return "The URL is invalid."
+        case .noData:
+            return "No data received from the server."
+        case .decodingFailed:
+            return "Failed to decode weather data."
+        }
+    }
 }
 
 class WeatherServiceImpl: WeatherService {
     private let baseURL = "https://api.weatherapi.com/v1/current.json"
     private let apiKey = "dcfc7e47d59e41ea949160412241712&q"
     
-    func fetchWeather(forCity city: String, completion: @escaping (Result<WeatherModel, any Error>) -> Void) {
+    func fetchWeather(forCity city: String, completion: @escaping (Result<WeatherModel, Error>) -> Void) {
         guard var urlComponents = URLComponents(string: baseURL) else {
             completion(.failure(NetworkError.invalidURL))
             return
@@ -37,7 +49,7 @@ class WeatherServiceImpl: WeatherService {
             return
         }
         
-        let task = URLSession.shared.dataTask(with: url) { data, response, error in
+        URLSession.shared.dataTask(with: url) { data, response, error in
             if let error = error {
                 completion(.failure(error))
                 return
@@ -49,19 +61,15 @@ class WeatherServiceImpl: WeatherService {
             }
             
             do {
-                let weatherResponse = try JSONDecoder().decode(WeatherModel.self, from: data)
-                completion(.success(weatherResponse))
+                let weather = try self.decodeWeather(from: data)
+                completion(.success(weather))
             } catch {
                 completion(.failure(NetworkError.decodingFailed))
             }
-        }
-        task.resume()
+        }.resume()
     }
     
-}
-
-extension WeatherServiceImpl {
-    func decodeWeather(from data: Data) throws -> WeatherModel {
+    private func decodeWeather(from data: Data) throws -> WeatherModel {
         let decoder = JSONDecoder()
         return try decoder.decode(WeatherModel.self, from: data)
     }

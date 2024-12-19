@@ -12,7 +12,7 @@ class WeatherViewModel: ObservableObject {
     private let weatherService: WeatherService
     private var cancellables = Set<AnyCancellable>()
     
-    @Published var cityName: String = "Search for a city"
+    @Published var cityName: String = ""
     @Published var temperature: String = "--°F"
     @Published var feelsLike: String = ""
     @Published var condition: String = ""
@@ -43,7 +43,7 @@ class WeatherViewModel: ObservableObject {
         }
     }
     
-    func loadSavedCItyWeather() {
+    func loadSavedCityWeather() {
         guard let savedCity = UserDefaults.standard.string(forKey: "SavedCity") else {
             errorMessage = "No saved city. Please search for a city."
             return
