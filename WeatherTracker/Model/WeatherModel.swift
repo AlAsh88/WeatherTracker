@@ -41,6 +41,7 @@ public struct WeatherModel: Codable {
     public init(from decoder: Decoder) throws {
         do {
             let rootContainer = try decoder.container(keyedBy: RootKeys.self)
+            
             let locationContainer = try rootContainer.nestedContainer(keyedBy: LocationKeys.self, forKey: .location)
             cityName = try locationContainer.decode(String.self, forKey: .name)
             

@@ -8,29 +8,47 @@
 // SearchBarView.swift
 import SwiftUI
 
-struct SearchBarView: View {
-    @Binding var searchText: String
+struct SearchBar: View {
+    @State private var searchText: String = ""
+    var onSearch: (String) -> Void
     
     var body: some View {
         HStack {
-            TextField("Please Search For A City", text: $searchText)
-                .padding(.horizontal, 16)
-                .frame(height: 46)
-                .background(
-                    RoundedRectangle(cornerRadius: 16)
-                        .fill(Color(red: 0.95, green: 0.95, blue: 0.95))
-                )
-                .overlay(
-                    HStack {
-                        Spacer()
-                        Image(systemName: "magnifyingglass")
-                            .foregroundColor(.gray)
-                            .padding(.trailing, 16)
-                    }
-                )
+            TextField("Search for a city", text: $searchText)
+                .padding(12)
+                .background(Color.gray.opacity(0.2))
+                .cornerRadius(8)
+                .onSubmit {
+                    onSearch(searchText)
+                }
+            
+            Button(action: {
+                onSearch(searchText)
+            }) {
+                Image(systemName: "magnifyingglass")
+                    .foregroundColor(.blue)
+            }
         }
-        .padding(.horizontal, 24)
-        .padding(.top, 44)
+        .padding(.horizontal, 16)
+        .frame(width: 327, height: 46)  // Width and height from Figma
+        .background(Color(red: 242/255, green: 242/255, blue: 242/255))
+        .cornerRadius(15)
+        .padding( .top, 24)
+        .padding(.leading, 24)
     }
 }
 
+struct SearchResultCard: View {
+    let cityName: String
+    let onTap: () -> Void
+    
+    var body: some View {
+        Button(action: onTap) {
+            Text(cityName)
+                .padding()
+                .background(Color.gray.opacity(0.2))
+                .cornerRadius(8)
+                .padding(.horizontal)
+        }
+    }
+}
