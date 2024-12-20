@@ -14,41 +14,31 @@ struct SearchBar: View {
     
     var body: some View {
         HStack {
-            TextField("Search for a city", text: $searchText)
-                .padding(12)
-                .background(Color.gray.opacity(0.2))
+            // Search Location TextField
+            TextField("Search Location", text: $searchText)
+                .font(.custom("Poppins-Regular", size: 15))
+                .foregroundColor(Color(red: 0.769, green: 0.769, blue: 0.769))
+                .frame(width: 121, height: 23)
+                .padding(.leading, 8) // Padding inside the text field
+                .background(Color(red: 0.95, green: 0.95, blue: 0.95))
                 .cornerRadius(8)
                 .onSubmit {
                     onSearch(searchText)
                 }
             
+            // Magnifying Glass Icon Button
             Button(action: {
                 onSearch(searchText)
             }) {
                 Image(systemName: "magnifyingglass")
                     .foregroundColor(.blue)
+                    .padding(12)
             }
         }
-        .padding(.horizontal, 16)
-        .frame(width: 327, height: 46)  // Width and height from Figma
-        .background(Color(red: 242/255, green: 242/255, blue: 242/255))
-        .cornerRadius(15)
-        .padding( .top, 24)
-        .padding(.leading, 24)
+        .padding(.horizontal, 16) // Outer padding for alignment
+        .frame(height: 46) // Adjust height to match design
+        .background(Color(red: 0.95, green: 0.95, blue: 0.95))
+        .cornerRadius(15) // Apply corner radius to the background
     }
-}
 
-struct SearchResultCard: View {
-    let cityName: String
-    let onTap: () -> Void
-    
-    var body: some View {
-        Button(action: onTap) {
-            Text(cityName)
-                .padding()
-                .background(Color.gray.opacity(0.2))
-                .cornerRadius(8)
-                .padding(.horizontal)
-        }
-    }
 }

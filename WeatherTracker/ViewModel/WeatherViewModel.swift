@@ -30,14 +30,25 @@ class WeatherViewModel: ObservableObject {
         isLoading = true
         errorMessage = nil
         
-        weatherService.fetchWeather(forCity: city) { [weak self] result in
-            DispatchQueue.main.async {
-                self?.isLoading = false
-                switch result {
-                case .success(let weather):
-                    self?.updateWeatherUI(with: weather)
-                case .failure(let error):
-                    self?.errorMessage = "Failed to load weather data: \(error.localizedDescription)"
+        Task.detached { [weak self] in
+            guard let self = self else { return }
+            
+            do {
+                let weather = try await self.weatherService.fetchWeather(forCity: city)
+                
+                await MainActor.run {
+                    self.updateWeatherUI(with: weather)
+                    self.isLoading = false
+                }
+            } catch let error as NetworkError {
+                await MainActor.run {
+                    self.errorMessage = error.localizedDescription
+                    self.isLoading = false
+                }
+            } catch {
+                await MainActor.run {
+                    self.errorMessage = "Unexpected error: \(error.localizedDescription)"
+                    self.isLoading = false
                 }
             }
         }
@@ -45,7 +56,7 @@ class WeatherViewModel: ObservableObject {
     
     func loadSavedCityWeather() {
         guard let savedCity = UserDefaults.standard.string(forKey: "SavedCity") else {
-            errorMessage = "No saved city. Please search for a city."
+            errorMessage = "Please Search For A City."
             return
         }
         fetchWeather(for: savedCity)
@@ -54,10 +65,10 @@ class WeatherViewModel: ObservableObject {
     private func updateWeatherUI(with weather: WeatherModel) {
         cityName = weather.cityName
         temperature = String(format: "%.1f°F", weather.temperature)
-        feelsLike = "Feels Like: \(String(format: "%.1f°F", weather.feelsLike))"
+        feelsLike = "Feels Like \(String(format: "%.1f°F", weather.feelsLike))"
         condition = weather.condition
-        humidity = "Humidity: \(weather.humidity)%"
-        uvIndex = "UV Index: \(weather.uvIndex)"
+        humidity = "Humidity \(weather.humidity)%"
+        uvIndex = "UV Index \(weather.uvIndex)"
         iconURL = weather.iconURL
     }
     

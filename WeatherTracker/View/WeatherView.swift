@@ -13,100 +13,109 @@ struct WeatherView: View {
     init(viewModel: WeatherViewModel = WeatherViewModel()) {
         self.viewModel = viewModel
         // Load the weather for the saved city when the view appears
-        viewModel.loadSavedCityWeather()
+        //        viewModel.loadSavedCityWeather()
     }
     
     var body: some View {
-        VStack(spacing: 16) {
-            if viewModel.isLoading {
-                // Show loading spinner
-                ProgressView("Loading...")
-                    .progressViewStyle(CircularProgressViewStyle())
-                    .padding(.top, 50)
-            } else if let errorMessage = viewModel.errorMessage {
-                // Show error message
-                Text(errorMessage)
-                    .foregroundColor(.red)
-                    .multilineTextAlignment(.center)
-                    .padding(.top, 50)
-            } else {
-                // City Name
-                Text(viewModel.cityName)
-                    .font(.custom("Poppins-SemiBold", size: 36))
-                    .foregroundColor(Color(red: 0.172, green: 0.172, blue: 0.172))
-                    .multilineTextAlignment(.center)
+        ZStack(alignment: .top) {
+            // Background for the weather content
+            Color.white.edgesIgnoringSafeArea(.all)
+            
+            // Weather Details
+            VStack() {
+                Spacer().frame(width: 204, height: 261)
                 
-                // Temperature and Weather Condition
-                HStack(spacing: 12) {
-                    Text(viewModel.temperature)
-                        .font(.custom("Poppins-Bold", size: 48))
-                        .foregroundColor(Color(red: 0.172, green: 0.172, blue: 0.172))
-                    
-                    VStack {
-                        if let iconURL = viewModel.iconURL {
-                            // Display weather icon from URL
-                            AsyncImage(url: iconURL) { phase in
-                                if let image = phase.image {
-                                    image.resizable()
-                                        .scaledToFit()
-                                        .frame(width: 40, height: 40)
-                                } else if phase.error != nil {
-                                    Text("❌")
-                                        .font(.system(size: 40))
-                                } else {
-                                    ProgressView()
-                                        .frame(width: 40, height: 40)
-                                }
-                            }
-                        }
-                        Text(viewModel.condition)
-                            .font(.custom("Poppins-Regular", size: 16))
-                            .foregroundColor(.gray)
-                    }
+                if viewModel.isLoading {
+                    // Show loading spinner
+                    ProgressView("Loading...")
+                        .progressViewStyle(CircularProgressViewStyle())
+                        .padding(.top, 50)
+                    //                Spacer()
+                } else if let errorMessage = viewModel.errorMessage {
+                    // Show error message
+                    Text(errorMessage)
+                        .foregroundColor(.red)
+                        .multilineTextAlignment(.center)
+                        .padding()
+                    //                Spacer()
+                } else {
+                    weatherDetailsView
                 }
-                
-                // Feels Like Temperature
-                Text(viewModel.feelsLike)
-                    .font(.custom("Poppins-Regular", size: 18))
-                    .foregroundColor(.gray)
-                
-                // Humidity
-                Text(viewModel.humidity)
-                    .font(.custom("Poppins-Regular", size: 18))
-                    .foregroundColor(.gray)
-                
-                // UV Index
-                HStack {
-                    Text(viewModel.uvIndex)
-                        .font(.custom("Poppins-Regular", size: 18))
-                        .foregroundColor(.gray)
-                    
-                    // Optional: Color coding the UV index for easy understanding
-                    Spacer()
-                    Text(viewModel.uvIndex)
-                        .foregroundColor(uvIndexColor(uvIndex: viewModel.uvIndex))
-                }
-                
                 Spacer()
             }
+            .padding(.horizontal, 16)
             // Search Bar
             SearchBar(onSearch: { city in
                 viewModel.fetchWeather(for: city)
             })
-            .padding(.top, 20)
+            .frame(width: 327, height: 46)
+            .background(Color(red: 0.95, green: 0.95, blue: 0.95))
+            .cornerRadius(15)
+            .padding(.horizontal, 24)
+            .padding(.top, 44)
         }
-        .padding(24)
-        .background(Color.white.edgesIgnoringSafeArea(.all))
     }
     
-    // Helper method to get color for UV index
-    func uvIndexColor(uvIndex: String) -> Color {
-        guard let uvValue = Double(uvIndex) else { return .green }
-        switch uvValue {
-        case 0...3: return .green
-        case 4...6: return .yellow
-        case 7...10: return .red
-        default: return .purple
+    
+    private var weatherDetailsView: some View {
+        VStack(spacing: 16) {
+            // Weather Details with Icon first, followed by City Name
+            HStack(spacing: 12) {
+                if let iconURL = viewModel.iconURL {
+                    AsyncImage(url: iconURL) { phase in
+                        if let image = phase.image {
+                            image.resizable()
+                                .scaledToFit()
+                                .frame(width: 123, height: 113) // Set width and height for icon
+                        } else if phase.error != nil {
+                            Text("❌")
+                                .font(.system(size: 40))
+                        } else {
+                            ProgressView()
+                                .frame(width: 40, height: 40)
+                        }
+                    }
+                }
+                
+                Text(viewModel.cityName)
+                    .font(.custom("Poppins-SemiBold", size: 36))
+                    .foregroundColor(Color(red: 0.172, green: 0.172, blue: 0.172))
+                    .multilineTextAlignment(.center)
+            }
+            
+            // Temperature
+            Text(viewModel.temperature)
+                .font(.custom("Poppins-Bold", size: 48))
+                .foregroundColor(Color(red: 0.172, green: 0.172, blue: 0.172))
+            
+            // Container Box for Humidity, UV Index, and Feels Like
+            HStack {
+                VStack {
+                    Text(viewModel.humidity)
+                        .font(.custom("Poppins-Regular", size: 12))
+                        .foregroundColor(.gray)
+                }
+                .frame(width: 60, height: 43)
+                Spacer()
+                VStack {
+                    Text(viewModel.uvIndex)
+                        .font(.custom("Poppins-Regular", size: 12))
+                        .foregroundColor(.gray)
+                }
+                .frame(width: 40, height: 43)
+                Spacer()
+                VStack {
+                    Text(viewModel.feelsLike)
+                        .font(.custom("Poppins-Regular", size: 12))
+                        .foregroundColor(.gray)
+                }
+                .frame(width: 60, height: 37)
+            }
+            .padding()
+            .frame(width: 274, height: 75)
+            .background(Color(red: 0.95, green: 0.95, blue: 0.95))
+            .padding(.top, 16)
         }
     }
+
 }
