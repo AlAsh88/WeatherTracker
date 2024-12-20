@@ -12,8 +12,13 @@ class WeatherViewModel: ObservableObject {
     private let weatherService: WeatherService
     private var cancellables = Set<AnyCancellable>()
     
-    @Published var cityName: String = ""
-    @Published var temperature: String = "--°F"
+    @Published var cityName: String = "" {
+        didSet {
+            saveCityName()
+        }
+    }
+    
+    @Published var temperature: String = ""
     @Published var feelsLike: String = ""
     @Published var condition: String = ""
     @Published var humidity: String = ""
@@ -24,6 +29,7 @@ class WeatherViewModel: ObservableObject {
     
     init(weatherService: WeatherService = WeatherServiceImpl()) {
         self.weatherService = weatherService
+        loadSavedCityWeather()
     }
     
     func fetchWeather(for city: String) {
@@ -62,10 +68,14 @@ class WeatherViewModel: ObservableObject {
         fetchWeather(for: savedCity)
     }
     
+    private func saveCityName() {
+        UserDefaults.standard.set(cityName, forKey: "SavedCity")
+    }
+    
     private func updateWeatherUI(with weather: WeatherModel) {
         cityName = weather.cityName
-        temperature = String(format: "%.1f°F", weather.temperature)
-        feelsLike = "Feels Like \(String(format: "%.1f°F", weather.feelsLike))"
+        temperature = String(format: "%.1f", weather.temperature)
+        feelsLike = "Feels Like \(String(format: "%.1f", weather.feelsLike))"
         condition = weather.condition
         humidity = "Humidity \(weather.humidity)%"
         uvIndex = "UV Index \(weather.uvIndex)"
