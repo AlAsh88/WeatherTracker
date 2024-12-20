@@ -19,7 +19,7 @@ struct SearchBar: View {
                 .font(.custom("Poppins-Regular", size: 15))
                 .foregroundColor(Color(red: 0.769, green: 0.769, blue: 0.769))
                 .frame(width: 121, height: 23)
-                .padding(.leading, 8) // Padding inside the text field
+                .padding(.leading, 44) // Padding inside the text field
                 .background(Color(red: 0.95, green: 0.95, blue: 0.95))
                 .cornerRadius(8)
                 .onSubmit {
@@ -31,14 +31,14 @@ struct SearchBar: View {
                 onSearch(searchText)
             }) {
                 Image(systemName: "magnifyingglass")
-                    .foregroundColor(.blue)
-                    .padding(12)
+                    .foregroundColor(.gray)
+                    .padding(50)
             }
         }
-        .padding(.horizontal, 16) // Outer padding for alignment
-        .frame(height: 46) // Adjust height to match design
+        .frame(height: 46)
+        .padding(.leading, 24)
         .background(Color(red: 0.95, green: 0.95, blue: 0.95))
-        .cornerRadius(15) // Apply corner radius to the background
+        .cornerRadius(15)
     }
 
 }

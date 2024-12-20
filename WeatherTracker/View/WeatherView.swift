@@ -58,64 +58,79 @@ struct WeatherView: View {
     
     
     private var weatherDetailsView: some View {
-        VStack(spacing: 16) {
-            // Weather Details with Icon first, followed by City Name
-            HStack(spacing: 12) {
-                if let iconURL = viewModel.iconURL {
-                    AsyncImage(url: iconURL) { phase in
-                        if let image = phase.image {
-                            image.resizable()
-                                .scaledToFit()
-                                .frame(width: 123, height: 113) // Set width and height for icon
-                        } else if phase.error != nil {
-                            Text("❌")
-                                .font(.system(size: 40))
-                        } else {
-                            ProgressView()
-                                .frame(width: 40, height: 40)
+        VStack {
+            ZStack {
+                // Background Box
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(Color(red: 0.95, green: 0.95, blue: 0.95))
+                    .frame(width: 204, height: 261)
+                
+                VStack {
+                    // Weather Icon
+                    if let iconURL = viewModel.iconURL {
+                        AsyncImage(url: iconURL) { phase in
+                            if let image = phase.image {
+                                image.resizable()
+                                    .scaledToFit()
+                                    .frame(width: 123, height: 113) // Icon size
+                            } else if phase.error != nil {
+                                Text("❌")
+                                    .font(.system(size: 40))
+                            } else {
+                                ProgressView()
+                                    .frame(width: 40, height: 40)
+                            }
                         }
                     }
+                    
+                    // City Name
+                    Text(viewModel.cityName)
+                        .font(.custom("Poppins-SemiBold", size: 24))
+                        .foregroundColor(Color(red: 0.172, green: 0.172, blue: 0.172))
+                        .multilineTextAlignment(.center)
+                    
+                    // Temperature
+                    Text(viewModel.temperature)
+                        .font(.custom("Poppins-Bold", size: 36))
+                        .foregroundColor(Color(red: 0.172, green: 0.172, blue: 0.172))
+                    
                 }
-                
-                Text(viewModel.cityName)
-                    .font(.custom("Poppins-SemiBold", size: 36))
-                    .foregroundColor(Color(red: 0.172, green: 0.172, blue: 0.172))
-                    .multilineTextAlignment(.center)
             }
-            
-            // Temperature
-            Text(viewModel.temperature)
-                .font(.custom("Poppins-Bold", size: 48))
-                .foregroundColor(Color(red: 0.172, green: 0.172, blue: 0.172))
+            .frame(width: 204, height: 261)
+            .padding(.top, 16) // Adjust padding to position it below the search bar
             
             // Container Box for Humidity, UV Index, and Feels Like
-            HStack {
-                VStack {
-                    Text(viewModel.humidity)
-                        .font(.custom("Poppins-Regular", size: 12))
-                        .foregroundColor(.gray)
+            ZStack {
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(Color(red: 0.95, green: 0.95, blue: 0.95))
+                    .frame(width: 274, height: 75)
+                
+                HStack(spacing: 24) {
+                    VStack {
+                        Text(viewModel.humidity)
+                            .font(.custom("Poppins-Regular", size: 12))
+                            .foregroundColor(.gray)
+                    }
+                    .frame(width: 60, height: 43)
+                    
+                    VStack {
+                        Text(viewModel.uvIndex)
+                            .font(.custom("Poppins-Regular", size: 12))
+                            .foregroundColor(.gray)
+                    }
+                    .frame(width: 40, height: 43)
+                    
+                    VStack {
+                        Text(viewModel.feelsLike)
+                            .font(.custom("Poppins-Regular", size: 12))
+                            .foregroundColor(.gray)
+                    }
+                    .frame(width: 60, height: 37)
                 }
-                .frame(width: 60, height: 43)
-                Spacer()
-                VStack {
-                    Text(viewModel.uvIndex)
-                        .font(.custom("Poppins-Regular", size: 12))
-                        .foregroundColor(.gray)
-                }
-                .frame(width: 40, height: 43)
-                Spacer()
-                VStack {
-                    Text(viewModel.feelsLike)
-                        .font(.custom("Poppins-Regular", size: 12))
-                        .foregroundColor(.gray)
-                }
-                .frame(width: 60, height: 37)
+                .padding()
+                .frame(width: 274, height: 75)
             }
-            .padding()
-            .frame(width: 274, height: 75)
-            .background(Color(red: 0.95, green: 0.95, blue: 0.95))
-            .padding(.top, 16)
         }
     }
-
+    
 }
