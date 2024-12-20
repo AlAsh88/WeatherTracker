@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		7C71F76E2D16260A00B7CED2 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 7C71F76D2D16260A00B7CED2 /* README.md */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		7C6927AD2D122B8400F9A8AF /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -19,6 +23,7 @@
 /* Begin PBXFileReference section */
 		7C69279C2D122B8100F9A8AF /* WeatherTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WeatherTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7C6927AC2D122B8400F9A8AF /* WeatherTrackerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WeatherTrackerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		7C71F76D2D16260A00B7CED2 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -68,6 +73,7 @@
 		7C6927932D122B8100F9A8AF = {
 			isa = PBXGroup;
 			children = (
+				7C71F76D2D16260A00B7CED2 /* README.md */,
 				7C69279E2D122B8100F9A8AF /* WeatherTracker */,
 				7C6927AF2D122B8400F9A8AF /* WeatherTrackerTests */,
 				7C69279D2D122B8100F9A8AF /* Products */,
@@ -175,6 +181,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7C71F76E2D16260A00B7CED2 /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
