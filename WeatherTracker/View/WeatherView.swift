@@ -62,7 +62,7 @@ struct WeatherView: View {
             ZStack {
                 // Background Box
                 RoundedRectangle(cornerRadius: 16)
-                    .fill(Color(red: 0.95, green: 0.95, blue: 0.95))
+                    .fill(Color.clear)
                     .frame(width: 204, height: 261)
                 
                 VStack {
