@@ -1,6 +1,6 @@
-# Weather App
+# Weather Tracker
 
-This Weather App fetches and displays weather information for a selected city using the OpenWeatherMap API. It supports persistence of the last searched city, MVVM-C architecture, dependency injection, and error handling. The app demonstrates both UIKit and SwiftUI for UI development.
+This Weather Tracker fetches and displays weather information for a selected city using the OpenWeatherMap API. It supports persistence of the last searched city, MVVM-C architecture, dependency injection, and error handling. The app demonstrates both UIKit and SwiftUI for UI development.
 
 ## Features
 - Search for current weather by city.
@@ -30,7 +30,7 @@ cd weather-app
 ### 2. Open the Project in Xcode
 Open the `.xcodeproj` file in Xcode:
 ```bash
-open WeatherApp.xcodeproj
+open WeatherTracker.xcodeproj
 ```
 
 ### 3. Add API Key
