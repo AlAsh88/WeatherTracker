@@ -12,13 +12,10 @@ struct WeatherView: View {
     
     init(viewModel: WeatherViewModel = WeatherViewModel()) {
         self.viewModel = viewModel
-        // Load the weather for the saved city when the view appears
-        //        viewModel.loadSavedCityWeather()
     }
     
     var body: some View {
         ZStack(alignment: .top) {
-            // Background for the weather content
             Color.white.edgesIgnoringSafeArea(.all)
             
             // Weather Details
@@ -26,25 +23,20 @@ struct WeatherView: View {
                 Spacer().frame(width: 204, height: 261)
                 
                 if viewModel.isLoading {
-                    // Show loading spinner
                     ProgressView("Loading...")
                         .progressViewStyle(CircularProgressViewStyle())
                         .padding(.top, 50)
-                    //                Spacer()
                 } else if let errorMessage = viewModel.errorMessage {
-                    // Show error message
                     Text(errorMessage)
                         .foregroundColor(.red)
                         .multilineTextAlignment(.center)
                         .padding()
-                    //                Spacer()
                 } else {
                     weatherDetailsView
                 }
                 Spacer()
             }
             .padding(.horizontal, 16)
-            // Search Bar
             SearchBar(onSearch: { city in
                 viewModel.fetchWeather(for: city)
             })
@@ -60,7 +52,6 @@ struct WeatherView: View {
     private var weatherDetailsView: some View {
         VStack {
             ZStack {
-                // Background Box
                 RoundedRectangle(cornerRadius: 16)
                     .fill(Color.clear)
                     .frame(width: 204, height: 261)
@@ -72,7 +63,7 @@ struct WeatherView: View {
                             if let image = phase.image {
                                 image.resizable()
                                     .scaledToFit()
-                                    .frame(width: 123, height: 113) // Icon size
+                                    .frame(width: 123, height: 113)
                             } else if phase.error != nil {
                                 Text("❌")
                                     .font(.system(size: 40))
@@ -97,9 +88,7 @@ struct WeatherView: View {
                 }
             }
             .frame(width: 204, height: 261)
-            .padding(.top, 16) // Adjust padding to position it below the search bar
             
-            // Container Box for Humidity, UV Index, and Feels Like
             ZStack {
                 RoundedRectangle(cornerRadius: 16)
                     .fill(Color(red: 0.95, green: 0.95, blue: 0.95))

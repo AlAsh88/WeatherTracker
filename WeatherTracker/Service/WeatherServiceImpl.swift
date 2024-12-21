@@ -87,11 +87,6 @@ class WeatherServiceImpl: WeatherService {
                 return
             }
             
-            // Log the raw JSON
-            if let jsonString = String(data: data, encoding: .utf8) {
-                print("Raw JSON Response: \(jsonString)")
-            }
-            
             do {
                 let weather = try self.decodeWeather(from: data)
                 completion(.success(weather))
@@ -103,12 +98,10 @@ class WeatherServiceImpl: WeatherService {
     
     func decodeWeather(from data: Data) throws -> WeatherModel {
         let decoder = JSONDecoder()
-        // Check if the response contains an error
         if let errorResponse = try? decoder.decode(ErrorResponse.self, from: data) {
             throw NetworkError.apiError(errorResponse.error.message)
         }
         
-        // Decode the weather model
         return try decoder.decode(WeatherModel.self, from: data)
     }
 }
